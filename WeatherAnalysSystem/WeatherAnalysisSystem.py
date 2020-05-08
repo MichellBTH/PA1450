@@ -6,6 +6,9 @@ from datetime import datetime, timedelta
 storage = list()
 temperature = list()
 time = list()
+rainfall = list()
+sunshine = list()
+
 
 def readCSVFile(file,data):
     with open(file, newline="") as cfile:
@@ -63,17 +66,17 @@ def displayInterval(fig,date,date2):
 
     fig.add_trace(go.Scatter(x=time, y=temperature,mode="markers", name=lastDate))
 
-def displayDay(fig,date):
+def displayDay(fig,date,data):
     
     correctFormat(date)
 
-    for i in range(len(storage)):
-        if(storage[i][0] == date):
-            temperature.append(storage[i][2])
+    for i in range(len(data)):
+        if(data[i][0] == date):
+            temperature.append(data[i][2])
 
-    for i in range(len(storage)):
-        if(storage[i][0] == date):
-            time.append(storage[i][1][0:2])
+    for i in range(len(data)):
+        if(data[i][0] == date):
+            time.append(data[i][1][0:2])
 
     fig.add_trace(go.Scatter(x=time, y=temperature,mode="markers", name=date ))
 
@@ -84,16 +87,18 @@ def menu():
     fig = go.Figure()
     answear = -1
     readCSVFile("smhi-opendata_1_65090_20200507_045303.csv",storage)
+    readCSVFile("sol.csv",sunshine)
+    readCSVFile("nederbörd.csv",rainfall)
     valid = False
     target = 0
 
     print("\nWelcome\nPress 0 to put in a date for a specific day for a specific year")
     print("Press 1 for chosing a specific interval")
     print("Press 2 for chosing a specific month")
-    print("Press 3 to exit")
-    print("Press 4 to choose a specific day in a week of a month")
-    print("Press 5 to generate sunshine report for a certain day")
-    print("Press 6 to generate rainfall report for a certain day ")
+    print("Press 3 to choose a specific day in a week of a month")
+    print("Press 4 to generate sunshine report for a certain day")
+    print("Press 5 to generate rainfall report for a certain day ")
+    print("Press 6 to exit")
 
     while (answear != -2):
 
@@ -107,10 +112,33 @@ def menu():
             valid = True
 
             if answear == 0:
-                print("\nInput a date in format xxxx-xx-xx")
-                print("Available date in range",storage[0][0],"to",storage[len(storage)-1][0])
-                date = input("Type in a date:")
-                displayDay(fig,date)
+                data =""
+                print("What type of data?")
+                print("Avalable data types: temprature, sunshine, rainfall")
+                data = input("Type in type:")
+
+                while(data != "temprature" and data != "sunshine" and data != "rainfall"):
+                    print("Invalid type")
+                    data = input("Type in type:")
+                
+                if data == "temprature":
+                    print("\nInput a date in format xxxx-xx-xx")
+                    print("Available date in range",storage[0][0],"to",storage[len(storage)-1][0])
+                    date = input("Type in a date:")
+                    displayDay(fig,date,storage)
+                 
+                elif data == "sunshine":
+                    print("\nInput a date in format xxxx-xx-xx")
+                    print("Available date in range",sunshine[0][0],"to",sunshine[len(sunshine)-1][0])
+                    date = input("Type in a date:")
+                    displayDay(fig,date,sunshine)
+                     
+                elif data == "rainfall":
+                    print("\nInput a date in format xxxx-xx-xx")
+                    print("Available date in range",rainfall[0][0],"to",rainfall[len(rainfall)-1][0])
+                    date = input("Type in a date:")
+                    displayDay(fig,date,rainfall)
+
                 
             elif answear == 1:
                 print("Available date in range",storage[0][0],"to",storage[len(storage)-1][0])
@@ -125,20 +153,20 @@ def menu():
                 date = input("Type in a date:")
                 displayMonth(fig,date,date2)
 
-            elif answear == 3:
+            elif answear == 6:
                 answear = -2
                 valid = False
 
-            elif answear == 4:
+            elif answear == 3:
                 print("Available date in range",storage[0][0],"to",storage[len(storage)-1][0])
                 print("\nInput a date in format xxxx-xx")
                 date = input("Type in a date:")
                 target = int(input("Type in a day where 0 is monday and 6 is sunday:"))
                 displayWeek(fig,date,date2,target)
 
-            elif answear == 5:
-                sunshine = list()
-                readCSVFile("sol.csv",sunshine)
+            elif answear == 4:
+
+               
                 print("Available date in range",sunshine[0][0],"to",sunshine[len(sunshine)-1][0])
                 print("\nInput a date in format xxxx-xx-xx")
                 date = input("Type in a date:")
@@ -146,9 +174,8 @@ def menu():
                 print("Done!")
                 valid = False
 
-            elif answear == 6:
-                rainfall = list()
-                readCSVFile("nederbörd.csv",rainfall)
+            elif answear == 5:
+                
                 print("Available date in range",rainfall[0][0],"to",rainfall[len(rainfall)-1][0])
                 print("\nInput a date in format xxxx-xx-xx")
                 date = input("Type in a date:")
@@ -292,12 +319,12 @@ def createRainfallReport(date,rainData):
     rain *= 100
 
     with open("RainfallRepport","w") as f:
-        print("Repport of how much rain there was during the whole day in karlskrona",file=f)
+        print("Report of how much rain there was during the whole day in karlskrona",file=f)
         for i in rainData:
             if(i[0] == date):
                 print(", ".join(i),file=f)
   
-        print("It rained "+str(rain)+"%"+"of the day",file=f)
+        print("It rained "+str(rain)+"%"+" of the day",file=f)
             
 
 menu()
