@@ -85,6 +85,7 @@ def menu():
     date = ""
     date2 = ""
     fig = go.Figure()
+    fig.update_layout(title ="Temperature", xaxis_title="Time(h)", yaxis_title="Temperature") 
     answear = -1
     readCSVFile("smhi-opendata_1_65090_20200507_045303.csv",storage)
     readCSVFile("sol.csv",sunshine)
@@ -120,23 +121,27 @@ def menu():
                 while(data != "temprature" and data != "sunshine" and data != "rainfall"):
                     print("Invalid type")
                     data = input("Type in type:")
-                
+
+
                 if data == "temprature":
                     print("\nInput a date in format xxxx-xx-xx")
                     print("Available date in range",storage[0][0],"to",storage[len(storage)-1][0])
                     date = input("Type in a date:")
+                    fig.update_layout(title ="Temperature", xaxis_title="Time(h)", yaxis_title="Temperature") 
                     displayDay(fig,date,storage)
                  
                 elif data == "sunshine":
                     print("\nInput a date in format xxxx-xx-xx")
                     print("Available date in range",sunshine[0][0],"to",sunshine[len(sunshine)-1][0])
                     date = input("Type in a date:")
+                    fig.update_layout(title ="sunshine", xaxis_title="Time(h)", yaxis_title="Sunshine amount of hour in seconds") 
                     displayDay(fig,date,sunshine)
                      
                 elif data == "rainfall":
                     print("\nInput a date in format xxxx-xx-xx")
                     print("Available date in range",rainfall[0][0],"to",rainfall[len(rainfall)-1][0])
-                    date = input("Type in a date:")
+                    date = input("Type in a date:") 
+                    fig.update_layout(title ="rainfall", xaxis_title="Time(h)", yaxis_title="Amount of rainfall") 
                     displayDay(fig,date,rainfall)
 
                 
@@ -198,6 +203,7 @@ def menu():
         if valid:
             makeGraph(fig)
             fig = go.Figure()
+            fig.update_layout(title ="Temperature", xaxis_title="Time(h)", yaxis_title="Temperature") 
               
 def displayMonth(fig,date,date2):
 
