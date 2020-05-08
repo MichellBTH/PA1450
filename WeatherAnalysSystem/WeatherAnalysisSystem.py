@@ -93,6 +93,7 @@ def menu():
     print("Press 3 to exit")
     print("Press 4 to choose a specific day in a week of a month")
     print("Press 5 to generate sunshine report for a certain day")
+    print("Press 6 to generate rainfall report for a certain day ")
 
     while (answear != -2):
 
@@ -145,13 +146,24 @@ def menu():
                 print("Done!")
                 valid = False
 
+            elif answear == 6:
+                rainfall = list()
+                readCSVFile("nederbörd.csv",rainfall)
+                print("Available date in range",rainfall[0][0],"to",rainfall[len(rainfall)-1][0])
+                print("\nInput a date in format xxxx-xx-xx")
+                date = input("Type in a date:")
+                createRainfallReport(date,rainfall)
+                print("Done!")
+                valid = False
+
+
             else:
                 print("\nInvalid input")
                 valid = False
                 answear = -1
            
 
-        except:
+        except ValueError("Wrong format"):
             print("Invalid date try again")
             valid = False
             answear = -1
@@ -204,11 +216,15 @@ def createSunshineReport(date,sunshine):
        if(sunshine[i][0] == date):
            sun += float(sunshine[i][2])/(60**2)
     
-    sun = sun/23.0
+    sun = sun/24.0
+    sun = sun*100
 
     with open("SunshineReport","w") as f:
-        print(10,"SunshineReport",file = f)
-  
+        print("Repport of how much sun there was during the whole day in karlskrona",file=f)
+        for i in sunshine:
+            if(i[0] == date):
+                print(", ".join(i),file=f)
+        print("It was sunny "+str(sun)+"%"+" of the day",file = f)
 
 def displayWeek(fig,date,date2,target):
 
@@ -265,7 +281,23 @@ def displayWeek(fig,date,date2,target):
 
     fig.add_trace(go.Scatter(x=time, y=temperature,mode="markers", name=lastDate))
 
+def createRainfallReport(date,rainData):
+    rain = 0.0
 
+    for i in rainData:
+        if(i[0] == date and float(i[2]) > 0):
+            rain += 1
+   
+    rain /= 24
+    rain *= 100
 
+    with open("RainfallRepport","w") as f:
+        print("Repport of how much rain there was during the whole day in karlskrona",file=f)
+        for i in rainData:
+            if(i[0] == date):
+                print(", ".join(i),file=f)
+  
+        print("It rained "+str(rain)+"%"+"of the day",file=f)
+            
 
 menu()
