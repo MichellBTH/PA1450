@@ -2,3 +2,5 @@ This is the manual for the Weather Analysis System
 
 To start the program double click the WeatherAnalysisSystem.py file.
 Follow the instructions on screen by entering a nummber or text. 
+There will be servral options from 0 to 7.
+If the program asks for a type you will need to type in the text as shown and it is case sensitive.
